@@ -12,3 +12,27 @@ const isPolindrome = (string) => {
     return true;
   }
 };
+
+// eslint-disable-next-line no-unused-vars
+const isMeetFitSchedule =
+(startWorkTime, endWorkTime, startMeetTime, meetingsDuration) => {
+  const startWorkTimeArray = startWorkTime.split(':');
+  const startWorkTimeInMinutes = parseInt(startWorkTimeArray[0], 10) * 60 + parseInt(startWorkTimeArray[1], 10);
+
+  const endWorkTimeArray = endWorkTime.split(':');
+  const endWorkTimeInMinutes = parseInt(endWorkTimeArray[0], 10) * 60 + parseInt(endWorkTimeArray[1], 10);
+
+  const  startMeetTimeArray =  startMeetTime.split(':');
+  const  startMeetTimeInMinutes =  parseInt(startMeetTimeArray[0],10) * 60 +  parseInt(startMeetTimeArray[1], 10);
+
+  if ((startMeetTimeInMinutes < startWorkTimeInMinutes) ||
+      (startMeetTimeInMinutes > endWorkTimeInMinutes)){
+    return false;
+  }
+
+  if ((startMeetTimeInMinutes + meetingsDuration) > endWorkTimeInMinutes) {
+    return false;
+  }
+
+  return true;
+};
