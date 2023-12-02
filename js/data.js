@@ -59,6 +59,6 @@ const createPhotoDescription = () => {
 };
 
 const createPhotosDescriptions = () =>
-  Array.from({length: NUMBER_PHOTO_DESCRIPTIONS}, createPhotoDescription());
+  Array.from({length: NUMBER_PHOTO_DESCRIPTIONS}, createPhotoDescription);
 
 export{createPhotosDescriptions};
