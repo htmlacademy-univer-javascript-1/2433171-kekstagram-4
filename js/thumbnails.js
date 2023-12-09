@@ -3,17 +3,15 @@ const thumbnailTemplate = document.querySelector('#picture')
   .content
   .querySelector('.picture');
 
-const similarpictureContainer = document.createDocumentFragment();
+const createThumbnail = ({url, description, likes, comments, id}) => {
+  const thumbnail = thumbnailTemplate.cloneNode(true);
+  thumbnail.querySelector('.picture__img').src = url;
+  thumbnail.querySelector('.picture__img').alt = description;
+  thumbnail.querySelector('.picture__likes').textContent = likes;
+  thumbnail.querySelector('.picture__comments').textContent = comments.length;
+  thumbnail.dataset.thumbnailId = id;
 
-const createThumbnail = ({url, description, likes, comments}) => {
-  const thumbnailElement = thumbnailTemplate.cloneNode(true);
-  thumbnailElement.querySelector('.picture__img').src = url;
-  thumbnailElement.querySelector('.picture__img').alt = description;
-  thumbnailElement.querySelector('.picture__likes').textContent = likes;
-  thumbnailElement.querySelector('.picture__comments').textContent = comments.length;
-  similarpictureContainer.appendChild(thumbnailElement);
-
-  return thumbnailElement;
+  return thumbnail;
 };
 
 const renderThumbnails = (pictures) => {

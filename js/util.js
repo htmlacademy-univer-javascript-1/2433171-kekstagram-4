@@ -8,20 +8,13 @@ const getRandomInteger = (a, b) => {
 const getRandomArrayElement = (elements) =>
   elements[getRandomInteger(0, elements.length - 1)];
 
-function createRandomId (min, max) {
-  const previousValues = [];
+function createIdGenerator () {
+  let lastGeneratorId = 0;
 
-  return function () {
-    let currentValue = getRandomInteger(min, max);
-    if (previousValues.length >= (max - min + 1)) {
-      return null;
-    }
-    while (previousValues.includes(currentValue)) {
-      currentValue = getRandomInteger(min, max);
-    }
-    previousValues.push(currentValue);
-    return currentValue;
+  return () => {
+    lastGeneratorId ++;
+    return lastGeneratorId;
   };
 }
 
-export {getRandomInteger, getRandomArrayElement, createRandomId};
+export {getRandomInteger, getRandomArrayElement, createIdGenerator};
