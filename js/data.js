@@ -1,4 +1,4 @@
-import {getRandomInteger, getRandomArrayElement} from './util.js';
+import {getRandomInteger, getRandomArrayElement, createIdGenerator} from './util.js';
 
 /* eslint-disable no-unused-vars */
 const MIN_COMMENT = 0;
@@ -37,10 +37,16 @@ const COMMENTS = [
   'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!',
 ];
 
-const createComment = (id) =>({
-  id: id,
+const generateCommentId = createIdGenerator();
+
+const createMessage = () => Array.from(
+  {length: getRandomInteger(1, 2)}, () =>
+    getRandomArrayElement(COMMENTS),).join(' ');
+
+const createComment = () =>({
+  id: generateCommentId(),
   avatar: `img/avatar-${getRandomInteger(MIN_AVATAR,MAX_AVATAR)}.svg`,
-  message: getRandomArrayElement(COMMENTS),
+  message: createMessage(),
   name: getRandomArrayElement(AUTHORS_COMMENTS_NAMES),
 });
 
@@ -49,8 +55,8 @@ const createPhotoDescription = (id) => ({
   url: `photos/${id}.jpg`,
   description: getRandomArrayElement(PHOTO_DESCRIPTION),
   likes: getRandomInteger(MIN_LIKES, MAX_LIKES),
-  comments: Array.from({length: getRandomInteger(MIN_COMMENT,MAX_COMMENT)})
-    .map((_, index) => createComment(index + 1)),
+  comments: Array.from( {length: getRandomInteger(MIN_COMMENT,MAX_COMMENT) },
+    createComment),
 });
 
 const createPhotosDescriptions = () =>
