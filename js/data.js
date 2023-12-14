@@ -1,6 +1,5 @@
 import {getRandomInteger, getRandomArrayElement, createIdGenerator} from './util.js';
 
-/* eslint-disable no-unused-vars */
 const MIN_COMMENT = 0;
 const MAX_COMMENT =30;
 const MIN_LIKES = 15;
@@ -8,6 +7,8 @@ const MAX_LIKES = 200;
 const MIN_AVATAR = 1;
 const MAX_AVATAR = 6;
 const NUMBER_PHOTO_DESCRIPTIONS = 25;
+const MIN_SENTENCES_IN_MESSAGE = 1;
+const MAX_SENTENCES_IN_MESSAGE = 2;
 
 const PHOTO_DESCRIPTION = [
   'И такое бывает!',
@@ -18,7 +19,7 @@ const PHOTO_DESCRIPTION = [
   'И не такое бывает!',
 ];
 
-const AUTHORS_COMMENTS_NAMES = [
+const NAMES = [
   'Иван',
   'Хуан Себастьян',
   'Мария',
@@ -40,14 +41,14 @@ const COMMENTS = [
 const generateCommentId = createIdGenerator();
 
 const createMessage = () => Array.from(
-  {length: getRandomInteger(1, 2)}, () =>
+  {length: getRandomInteger(MIN_SENTENCES_IN_MESSAGE, MAX_SENTENCES_IN_MESSAGE)}, () =>
     getRandomArrayElement(COMMENTS),).join(' ');
 
 const createComment = () =>({
   id: generateCommentId(),
   avatar: `img/avatar-${getRandomInteger(MIN_AVATAR,MAX_AVATAR)}.svg`,
   message: createMessage(),
-  name: getRandomArrayElement(AUTHORS_COMMENTS_NAMES),
+  name: getRandomArrayElement(NAMES),
 });
 
 const createPhotoDescription = (id) => ({
