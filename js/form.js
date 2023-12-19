@@ -1,3 +1,6 @@
+import {resetScale} from './scale-picture.js';
+import {initEffect, resetEffect} from './effects.js';
+
 const MAX_HASHTAG_COUNT = 5;
 const REGEX_SYMBOLS = /^#[a-zа-яё0-9]{1,19}$/i;
 
@@ -7,6 +10,7 @@ const overlay = form.querySelector('.img-upload__overlay');
 const fileField = form.querySelector('.img-upload__input');
 const hashtagField = form.querySelector('.text__hashtags');
 const commentField = form.querySelector('.text__description');
+const cancelButton = form.querySelector('.img-upload__cancel');
 
 const pristine = new Pristine(form, {
   classTo: 'img-upload__field-wrapper',
@@ -14,6 +18,9 @@ const pristine = new Pristine(form, {
 });
 
 const showModal = () => {
+  //resetScale();
+  //resetEffect();
+  initEffect();
   overlay.classList.remove('hidden');
   body.classList.add('modal-open');
   document.addEventListener('keydown', onDocumentKeydown);
@@ -21,6 +28,8 @@ const showModal = () => {
 
 const hideModal = () => {
   form.reset();
+  resetEffect();
+  resetScale();
   overlay.classList.add('hidden');
   pristine.reset();
   body.classList.remove('modal-open');
@@ -49,6 +58,15 @@ const onFileInputChange = () => {
   showModal();
 };
 
+const onCancalButtonClick = () => {
+  hideModal();
+};
+
+const onFormSubmit = (evt) => {
+  evt.preventDefault();
+  pristine.validate();
+};
+
 
 function onDocumentKeydown(evt) {
   if (evt.key === 'Escape' && !isTextFieldFocused()) {
@@ -58,6 +76,8 @@ function onDocumentKeydown(evt) {
 }
 
 fileField.addEventListener('change', onFileInputChange);
+cancelButton.addEventListener('click', onCancalButtonClick);
+form.addEventListener('submit', onFormSubmit);
 
 pristine.addValidator(
   hashtagField,
