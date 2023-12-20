@@ -3,6 +3,7 @@ import  {getPictures, sendPictures} from './api.js';
 import {setOnFormSubmit, hideModal} from './form.js';
 import {showAlert} from './util.js';
 import { showSuccessMessage, showErrorMessage } from './message.js';
+//import {createPhotosDescriptions} from './data.js';
 
 //renderGallery(createPhotosDescriptions());
 setOnFormSubmit (async (data) => {
