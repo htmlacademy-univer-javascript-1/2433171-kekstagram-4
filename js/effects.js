@@ -16,7 +16,7 @@ const createSlider = (config, updateCallback) => {
   });
 };
 
-const resetEffect = () => {
+const reset = () => {
   destroySlider();
   picture.style.filter = '';
   levelValue.value = '';
@@ -85,12 +85,12 @@ const applyEffect = (effectId, value) => {
       picture.style.filter = `brightness(${value})`;
       break;
     default:
-      resetEffect();
+      reset();
   }
   levelValue.value = value;
 };
 
-const initEffect = () => {
+const init = () => {
   effectsButton.addEventListener('click', (evt) => {
     const effectButton = evt.target.closest('.effects__radio');
 
@@ -99,7 +99,7 @@ const initEffect = () => {
 
       const effectId = effectButton.id;
       if (effectId === 'effect-none') {
-        resetEffect();
+        reset();
       } else {
         const specificSliderConfig = getSpecificSliderConfig(effectId);
         createSlider(specificSliderConfig, (value) => {
@@ -110,4 +110,4 @@ const initEffect = () => {
   });
 };
 
-export {initEffect, resetEffect};
+export {init, reset};
