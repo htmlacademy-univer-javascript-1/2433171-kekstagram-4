@@ -1,8 +1,20 @@
 import {resetScale} from './scale-picture.js';
-import {initEffect, resetEffect} from './effects.js';
+import {
+  init as initEffect,
+  reset as resetEffect
+} from './effects.js';
 
 const MAX_HASHTAG_COUNT = 5;
 const REGEX_SYMBOLS = /^#[a-zа-яё0-9]{1,19}$/i;
+const ErrorText = {
+  INVALID_COUNT: `Число хэштегов не должно превышать ${MAX_HASHTAG_COUNT}`,
+  NOT_UNIQUE: 'Хэштеги должны быть уникальными',
+  INVALID_PATTERN: 'Неправильный хэштег',
+};
+const SubmitButtonText = {
+  IDLE: 'Опубликовать',
+  SUBMITTING: 'Отправляю..',
+};
 
 const body = document.querySelector('body');
 const form = document.querySelector('.img-upload__form');
@@ -11,6 +23,7 @@ const fileField = form.querySelector('.img-upload__input');
 const hashtagField = form.querySelector('.text__hashtags');
 const commentField = form.querySelector('.text__description');
 const cancelButton = form.querySelector('.img-upload__cancel');
+const submiteButton = form.querySelector('.img-upload__submit');
 
 const pristine = new Pristine(form, {
   classTo: 'img-upload__field-wrapper',
@@ -18,9 +31,7 @@ const pristine = new Pristine(form, {
 });
 
 const showModal = () => {
-  //resetScale();
-  //resetEffect();
-  initEffect();
+  //initEffect();
   overlay.classList.remove('hidden');
   body.classList.add('modal-open');
   document.addEventListener('keydown', onDocumentKeydown);
@@ -34,6 +45,14 @@ const hideModal = () => {
   pristine.reset();
   body.classList.remove('modal-open');
   document.removeEventListener('keydown', onDocumentKeydown);
+};
+
+const toogleSubmitButton = (isDisabled) => {
+  submiteButton.disabled = isDisabled;
+  submiteButton.textContent = isDisabled
+    ? SubmitButtonText.SUBMITTING
+    : SubmitButtonText.IDLE;
+
 };
 
 const isTextFieldFocused = () =>
@@ -54,6 +73,19 @@ const validateTagUniqueness = (value) => {
   return lowerCaseTags.length === new Set(lowerCaseTags).size;
 };
 
+const isErrorMessageShown = () => {
+  Boolean(document.querySelector('.error'));
+};
+
+function onDocumentKeydown(evt) {
+  if (evt.key === 'Escape'
+      && !isTextFieldFocused()
+      && !isErrorMessageShown()) {
+    evt.preventDefault();
+    hideModal();
+  }
+}
+
 const onFileInputChange = () => {
   showModal();
 };
@@ -62,37 +94,45 @@ const onCancalButtonClick = () => {
   hideModal();
 };
 
-const onFormSubmit = (evt) => {
-  evt.preventDefault();
-  pristine.validate();
+const setOnFormSubmit = (callback) => {
+  form.addEventListener('submit', async (evt) => {
+    evt.preventDefault();
+    const isValid = pristine.validate();
+
+    if (isValid) {
+      toogleSubmitButton(true);
+      await callback(new FormData(form));
+      toogleSubmitButton();
+    }
+  });
 };
 
-
-function onDocumentKeydown(evt) {
-  if (evt.key === 'Escape' && !isTextFieldFocused()) {
-    evt.preventDefault();
-    hideModal();
-  }
-}
-
-fileField.addEventListener('change', onFileInputChange);
-cancelButton.addEventListener('click', onCancalButtonClick);
-form.addEventListener('submit', onFormSubmit);
+// const onFormSubmit = (evt) => {
+//   evt.preventDefault();
+//   pristine.validate();
+// };
 
 pristine.addValidator(
   hashtagField,
   validateTagsCount,
-  `Число хэштегов не должно превышать ${MAX_HASHTAG_COUNT}`
+  ErrorText.INVALID_COUNT,
 );
 
 pristine.addValidator(
   hashtagField,
   validateTagUniqueness,
-  'Хэштеги должны быть уникальными'
+  ErrorText.NOT_UNIQUE,
 );
 
 pristine.addValidator(
   hashtagField,
   testTags,
-  'Неправильный хэштег'
+  ErrorText.INVALID_PATTERN,
 );
+
+fileField.addEventListener('change', onFileInputChange);
+cancelButton.addEventListener('click', onCancalButtonClick);
+initEffect();
+
+export{setOnFormSubmit, hideModal};
+
